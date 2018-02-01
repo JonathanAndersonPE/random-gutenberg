@@ -1,12 +1,14 @@
 # -*- coding: utf-8 -*-
 """
 Created on Sun Jan 28 20:02:44 2018
-
 @author: jpmul
 """
 import string
 import markovify
+import pandas as pd
 
+
+from textblob import TextBlob
 from gutenberg.acquire import load_etext
 from gutenberg.cleanup import strip_headers
 
@@ -48,10 +50,9 @@ def top_words(text, n):
 # Moby Dick 2701
 # Kama Sutra 27827        
 
-#books = [27827]
-books = [130, 1717, 470, 11505, 8092]
+books = [11]
+#books = [130, 1717, 470, 11505, 8092]
 text = ''
-
 print(f"Loading {len(books)} book(s) from Project Gutenberg...")
 for book in books:
     newtext = text + strip_headers(load_etext(book)).strip()
@@ -62,8 +63,18 @@ for book in books:
 #top_words(text, 10)
 print("Done.\n")
 
-text_model = markovify.Text(text, state_size=3)
-  
+
+# Importing kanye west
+west=''
+kanye = pd.read_csv('kanye lyrics.csv', encoding = "ISO-8859-1",header=None)
+west=''
+for i in range(len(kanye)):
+    west = west + ' ' + str(kanye[0][i])
+txtblb = TextBlob(west)
+print(f"Kanye West has sentiment of {txtblb.sentiment.polarity}")
+
+
+text_model = markovify.Text(west+text, state_size=2)
 
 #for i in range(2):
 #    print(text_model.make_sentence())
@@ -71,10 +82,8 @@ text_model = markovify.Text(text, state_size=3)
 #print('-'*80)    
 
 for i in range(10):
-
     tweet = text_model.make_short_sentence(140, max_overlap_ratio=0.70)
     if tweet is not None:
         print('-'*80)  
         print(tweet)
-
 print('-'*80)     
