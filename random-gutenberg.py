@@ -54,10 +54,12 @@ text = ''
 
 print(f"Loading {len(books)} book(s) from Project Gutenberg...")
 for book in books:
-    text = text + strip_headers(load_etext(book)).strip()
+    newtext = text + strip_headers(load_etext(book)).strip()
+    text = text + newtext
+    txtblb = TextBlob(newtext)
+    print(f"\tbook {book} has sentiment of {txtblb.sentiment.polarity}")
     print(f"\tBook loaded. Total source text length is now {len(text)}")
 #top_words(text, 10)
-
 print("Done.\n")
 
 text_model = markovify.Text(text, state_size=3)
